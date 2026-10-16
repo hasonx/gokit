@@ -1,0 +1,6 @@
+mongodb:
+  enable: false
+  uri: "mongodb://root:root_Mdso@127.0.0.1:27017"
+  name: sz_dashboard
+  timeout: 2s
+  num: 20

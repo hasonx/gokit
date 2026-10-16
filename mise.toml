@@ -1,0 +1,43 @@
+[settings]
+activate_aggressive = true
+
+[tools]
+go = "1.27.0"
+gofumpt = "0.11.0"
+golangci-lint = "2.13.2"
+
+[env]
+# Use versioned shared tools ahead of shell-injected binaries.
+_.path = { path = ["{{vars.editor_tools_root}}/impl/{{vars.impl_version}}/go{{vars.editor_tools_go_version}}/bin", "{{vars.editor_tools_root}}/goplay/{{vars.goplay_version}}/go{{vars.editor_tools_go_version}}/bin", "{{vars.editor_tools_root}}/dlv/{{vars.dlv_version}}/go{{vars.editor_tools_go_version}}/bin", "{{vars.editor_tools_root}}/gopls/{{vars.gopls_version}}/go{{vars.editor_tools_go_version}}/bin"], tools = true }
+
+GOROOT = ""
+GOTOOLCHAIN = "local"
+GOBIN = ""
+
+[vars]
+editor_tools_root = "~/.local/share/go-tools"
+editor_tools_go_version = "1.27.0"
+impl_version = "1.4.0"
+goplay_version = "1.0.0"
+dlv_version = "1.27.1"
+gopls_version = "0.23.0"
+
+[tasks.editor-tools-install]
+description = "Install pinned editor tools (Python 3.11+ required)"
+run = "python3 \"$HOME/projects/tools/goscripts/editor_tools.py\" install --project \"{{config_root}}\""
+
+[tasks.editor-tools-sync]
+description = "Merge resolved tool paths into local VS Code settings"
+run = "python3 \"$HOME/projects/tools/goscripts/editor_tools.py\" sync --project \"{{config_root}}\""
+
+[tasks.editor-tools-check]
+description = "Verify terminal tool paths and build identities"
+run = "python3 \"$HOME/projects/tools/goscripts/editor_tools.py\" check --project \"{{config_root}}\""
+
+[tasks.editor-tools-check-vscode]
+description = "Verify VS Code tool paths and build identities"
+run = "python3 \"$HOME/projects/tools/goscripts/editor_tools.py\" check-vscode --project \"{{config_root}}\""
+
+[tasks.editor-tools-info]
+description = "Show and validate pinned Go tool versions and real paths"
+run = "python3 \"$HOME/projects/tools/goscripts/editor_tools.py\" info --project \"{{config_root}}\""

@@ -1,0 +1,168 @@
+version: "2"
+run:
+  concurrency: 4
+  timeout: 5m
+  issues-exit-code: 1
+  tests: true
+linters:
+  default: none
+  enable:
+    - errcheck
+    - govet
+    - staticcheck
+    - ineffassign
+    - gosec
+    - unused
+    - revive
+    - gocritic
+    - misspell
+    - prealloc
+    - unconvert
+    - unparam
+    - depguard
+    - whitespace
+    - durationcheck
+    # - nilerr
+    - errorlint
+    - bodyclose
+    - asasalint
+    - gocognit
+    - dupl
+    - contextcheck
+    - cyclop # 复杂度分析，可替代 gocyclo
+    - wsl_v5 # 检查空行、缩进风格
+    - forcetypeassert # 防止不安全的类型断言
+    - exhaustive # 检查 switch 未覆盖所有枚举
+    - nolintlint # 检查无效的 //nolint 注释
+  settings:
+    wsl_v5:
+      allow-first-in-block: true
+      allow-whole-block: false
+      branch-max-lines: 2
+    depguard:
+      rules:
+        main:
+          deny: # 禁止从特定包导入（例如官方 encoding/json）并强制使用团队内自定义封装包
+            # - pkg: encoding/json
+            #   desc: use gitea's modules/json instead of encoding/json
+            - pkg: io/ioutil
+              desc: use os or io instead
+            - pkg: golang.org/x/exp
+              desc: it's experimental and unreliable
+    gocritic:
+      disabled-checks:
+        - ifElseChain
+        - singleCaseSwitch
+    revive:
+      confidence: 0.8
+      severity: warning
+      rules:
+        - name: blank-imports
+        - name: context-as-argument
+        - name: context-keys-type
+        - name: dot-imports
+        - name: error-return
+        - name: error-strings
+        - name: error-naming
+        - name: exported
+        - name: if-return
+        - name: increment-decrement
+        - name: var-naming
+        - name: var-declaration
+        - name: package-comments
+        - name: range
+        - name: receiver-naming
+        - name: time-naming
+        - name: unexported-return
+        - name: indent-error-flow
+        - name: errorf
+        - name: duplicated-imports
+        - name: modifies-value-receiver
+    staticcheck:
+      checks:
+        - -ST1003
+        - -ST1005
+        - all
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      - linters:
+          - dupl
+          - errcheck
+          - cyclop
+          - gosec
+          - staticcheck
+          - unparam
+        path: _test\.go
+      - linters:
+          - dupl
+          - errcheck
+          - cyclop
+          - gosec
+        path: models/migrations/v
+      - linters:
+          - forbidigo
+        path: cmd
+      - linters:
+          - dupl
+        text: webhook
+      - linters:
+          - gocritic
+        text: "`ID' should not be capitalized"
+      - linters:
+          - deadcode
+          - unused
+        text: swagger
+      - linters:
+          - staticcheck
+        text: argument x is overwritten before first use
+      - linters:
+          - gocritic
+        text: "commentFormatting: put a space between `//` and comment text"
+      - linters:
+          - gocritic
+        text: "exitAfterDefer:"
+    paths:
+      - ent
+      - third_party$
+      - builtin$
+      - examples$
+      - .git
+      - vendor
+      - .idea
+      - .vscode
+      - ".*\\.pb\\.go$"
+      - ".*_grpc\\.pb\\.go$"
+    # paths-except:
+    #   -
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  fix: true
+formatters:
+  enable:
+    #    - gofmt
+    - gofumpt
+    - goimports
+    - gci
+  settings:
+    gofumpt:
+      extra-rules: true
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(streamingservices)
+  exclusions:
+    generated: lax
+    paths:
+      - ent
+      - third_party$
+      - builtin$
+      - examples$
+      - ".*\\.api$"

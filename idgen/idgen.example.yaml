@@ -1,0 +1,12 @@
+generators:
+  user:
+    type: ulid
+    secure: true
+  order:
+    type: snowflake
+    worker_id: 3
+  log:
+    type: ulid
+  event:
+    type: snowflake
+    worker_id: 5
