@@ -41,3 +41,15 @@ run = "python3 \"$HOME/projects/tools/goscripts/editor_tools.py\" check-vscode -
 [tasks.editor-tools-info]
 description = "Show and validate pinned Go tool versions and real paths"
 run = "python3 \"$HOME/projects/tools/goscripts/editor_tools.py\" info --project \"{{config_root}}\""
+
+[tasks.env-check]
+description = "Check Go requirements, terminal and editor tools"
+run = "python3 \"$HOME/projects/tools/goscripts/editor_tools.py\" check-all --project \"{{config_root}}\""
+
+[tasks.editor-tools-update]
+description = "Install declared editor tools, sync VS Code, then check the environment"
+run = [
+  "mise run editor-tools-install",
+  "mise run editor-tools-sync",
+  "mise run env-check",
+]
